@@ -8,7 +8,7 @@ namespace RecipeProcessing.Api.Controllers;
 public class ImageController(IImageService imageService) : ControllerBase
 {
     [HttpPost("process")]
-    public IActionResult Process(IFormFile? imageFile)
+    public async Task< IActionResult> Process(IFormFile? imageFile)
     {
         if (imageFile == null || imageFile.Length == 0)
         {
@@ -16,8 +16,8 @@ public class ImageController(IImageService imageService) : ControllerBase
         }
         
         //Process the image
-        var result = imageService.Process(imageFile.OpenReadStream());
+        var result = await imageService.Process(imageFile.OpenReadStream());
         
-        return Ok("Image processed successfully.");
+        return Ok(result);
     }
 }

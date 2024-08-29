@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RecipeProcessing.Core\RecipeProcessing.Core.csproj" />
+      <ProjectReference Include="..\RecipeProcessing.Infrastructure\RecipeProcessing.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

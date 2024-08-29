@@ -1,6 +1,12 @@
-
+### Upload an image file for processing
 
 POST {{RecipeParser.Api_HostAddress}}/api/image/process
-Accept: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="imageFile"; filename="test-image-1.png"
+
+< test-image-1.png
+--WebAppBoundary--
 
 ###

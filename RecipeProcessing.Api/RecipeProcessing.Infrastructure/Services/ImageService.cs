@@ -4,8 +4,8 @@ namespace RecipeProcessing.Infrastructure.Services;
 
 public class ImageService : IImageService
 {
-    public String Process(Stream imageStream)
+    public async Task<string> Process(Stream imageStream)
     {
-        throw new NotImplementedException();
+        return await Task.FromResult("HELLO FROM THE IMAGE SERVICE");
     }
 }
