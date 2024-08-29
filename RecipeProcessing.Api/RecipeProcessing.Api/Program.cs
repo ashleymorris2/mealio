@@ -1,4 +1,5 @@
 using RecipeProcessing.Core.Interfaces;
+using RecipeProcessing.Infrastructure;
 using RecipeProcessing.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register custom services
-builder.Services.AddTransient<IImageService, ImageService>();
+//Infrastructure
+builder.Services.AddInfrastructure();
+
 
 // Add HttpClient
 builder.Services.AddHttpClient();
