@@ -1,0 +1,6 @@
+
+
+POST {{RecipeParser.Api_HostAddress}}/api/image/process
+Accept: application/json
+
+###
