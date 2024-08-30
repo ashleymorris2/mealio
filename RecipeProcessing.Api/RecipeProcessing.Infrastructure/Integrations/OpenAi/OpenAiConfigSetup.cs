@@ -1,21 +1,19 @@
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace RecipeProcessing.Infrastructure.Integrations.OpenAi;
 
-internal class OpenAiConfigSetup : IConfigureOptions<OpenAiConfig>
+internal class OpenAiConfigSetup(IConfiguration configuration) : IConfigureOptions<OpenAiConfig>
 {
-    private readonly IConfiguration _configuration;
-
-    public OpenAiConfigSetup(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public void Configure(OpenAiConfig options)
     {
-        // Bind the "OpenAi" section from appsettings.json to OpenAiConfig
-        _configuration.GetSection("OpenAi").Bind(options);
+        configuration.GetSection("OpenAi").Bind(options);
+
+        if (string.IsNullOrWhiteSpace(options.ApiKey))
+        {
+            throw new InvalidOperationException(
+                "The API key for OpenAI must be configured using an environment variable or User Secret."
+            );
+        }
     }
 }

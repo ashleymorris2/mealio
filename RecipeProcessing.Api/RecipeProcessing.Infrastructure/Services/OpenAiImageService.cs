@@ -15,7 +15,10 @@ public class OpenAiImageService : IImageService
 
     public async Task<string> Process(Stream imageStream)
     {
-        // var model = _openAiConfig.gptModels[GptModel.Gpt4o];
+        var model = _openAiConfig.gptModels[GptModel.Gpt4o];
+        var apiKey = _openAiConfig.ApiKey;
+        var endpoint = _openAiConfig.Endpoint;
+        
         
         
         return await Task.FromResult("HELLO FROM THE IMAGE SERVICE");
