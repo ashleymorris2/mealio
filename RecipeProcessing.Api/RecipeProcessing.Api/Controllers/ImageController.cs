@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using RecipeProcessing.Core.Interfaces;
+using RecipeProcessing.Infrastructure.Interfaces;
 
 namespace RecipeProcessing.Api.Controllers;
 

@@ -17,12 +17,11 @@ builder.Configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// // Add HttpClient
+// builder.Services.AddHttpClient();
+
 //Infrastructure
 builder.Services.AddInfrastructure();
-
-
-// Add HttpClient
-builder.Services.AddHttpClient();
 
 #endregion
 

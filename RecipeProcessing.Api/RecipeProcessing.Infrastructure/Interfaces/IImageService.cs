@@ -1,4 +1,4 @@
-namespace RecipeProcessing.Core.Interfaces;
+namespace RecipeProcessing.Infrastructure.Interfaces;
 
 public interface IImageService
 {
