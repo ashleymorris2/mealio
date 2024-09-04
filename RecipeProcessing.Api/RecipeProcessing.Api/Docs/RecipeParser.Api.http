@@ -10,7 +10,7 @@ Content-Type: image/png
 < test-image-1.png
 --WebAppBoundary--
 
-###
 
+### Return 400 (Bad Request) when no image is supplied
 
 POST {{RecipeParser.Api_HostAddress}}/api/image/process

@@ -7,20 +7,24 @@ namespace RecipeProcessing.Infrastructure.Services;
 
 internal class OpenAiImageService(IOptions<OpenAiConfig> options) : IImageService
 {
-    readonly OpenAiConfig _openAiConfig = options.Value;
-    
-    public async Task<string> Process(Stream imageStream, string imageFileContentType)
-   {
-       BinaryData imageBytes = await BinaryData.FromStreamAsync(imageStream);
-       List<ChatMessage> messages = [
-           new UserChatMessage(
-               ChatMessageContentPart.CreateTextMessageContentPart("Please describe the following image."),
-               ChatMessageContentPart.CreateImageMessageContentPart(imageBytes, imageFileContentType))
-       ];
-       
-       ChatClient chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o],_openAiConfig.ApiKey);
-       ChatCompletion chatCompletion = await chatClient.CompleteChatAsync(messages);
+    private readonly OpenAiConfig _openAiConfig = options.Value;
 
-       return chatCompletion.Content[0].Text;
-   }
+    public async Task<string> Process(Stream imageStream, string imageFileContentType)
+    {
+        var promptPath = Path.Combine(Directory.GetCurrentDirectory(), _openAiConfig.PromptPaths.ImageProcessing);
+        var prompt = await File.ReadAllTextAsync(promptPath);
+
+        BinaryData imageBytes = await BinaryData.FromStreamAsync(imageStream);
+        List<ChatMessage> messages =
+        [
+            new UserChatMessage(
+                ChatMessageContentPart.CreateTextMessageContentPart(prompt),
+                ChatMessageContentPart.CreateImageMessageContentPart(imageBytes, imageFileContentType))
+        ];
+
+        ChatClient chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o], _openAiConfig.ApiKey);
+        ChatCompletion chatCompletion = await chatClient.CompleteChatAsync(messages);
+
+        return chatCompletion.Content[0].Text;
+    }
 }

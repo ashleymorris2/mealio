@@ -8,7 +8,6 @@ internal class OpenAiConfigSetup(IConfiguration configuration) : IConfigureOptio
     public void Configure(OpenAiConfig openAiConfig)
     {
         configuration.GetSection("OpenAi").Bind(openAiConfig);
-
         if (string.IsNullOrWhiteSpace(openAiConfig.ApiKey))
         {
             throw new InvalidOperationException(

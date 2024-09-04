@@ -10,9 +10,16 @@ internal enum GptModel
     Gpt4o
 }
 
-internal class OpenAiConfig
+// Nested class for Prompts
+internal class PromptsConfig
+{
+    public string ImageProcessing { get; set; } = string.Empty;
+}
+
+internal class OpenAiConfig()
 {
     public string ApiKey { get; set; } = string.Empty;
+    public PromptsConfig PromptPaths { get; set; } = new();
 
     public readonly Dictionary<GptModel, string> gptModels = new()
     {

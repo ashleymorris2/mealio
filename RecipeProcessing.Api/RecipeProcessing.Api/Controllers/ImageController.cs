@@ -9,11 +9,12 @@ namespace RecipeProcessing.Api.Controllers;
 public class ImageController(IImageService imageService) : ControllerBase
 {
     [HttpPost("process")]
-    public async Task< IActionResult> Process(FileUpload fileUpload)
+    public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         //Process the image
-        var result = await imageService.Process(fileUpload.ImageFile!.OpenReadStream(), fileUpload.ImageFile.ContentType);
-        
+        var result =
+            await imageService.Process(fileUpload.ImageFile!.OpenReadStream(), fileUpload.ImageFile.ContentType);
+
         return Ok(result);
     }
 }
