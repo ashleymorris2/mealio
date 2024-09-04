@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RecipeProcessing.Api.Validation;
 using RecipeProcessing.Infrastructure.Interfaces;
 
 namespace RecipeProcessing.Api.Controllers;
@@ -8,15 +9,10 @@ namespace RecipeProcessing.Api.Controllers;
 public class ImageController(IImageService imageService) : ControllerBase
 {
     [HttpPost("process")]
-    public async Task< IActionResult> Process(IFormFile? imageFile)
+    public async Task< IActionResult> Process(FileUpload fileUpload)
     {
-        if (imageFile == null || imageFile.Length == 0)
-        {
-            return BadRequest("No image uploaded.");
-        }
-        
         //Process the image
-        var result = await imageService.Process(imageFile.OpenReadStream());
+        var result = await imageService.Process(fileUpload.ImageFile!.OpenReadStream(), fileUpload.ImageFile.ContentType);
         
         return Ok(result);
     }

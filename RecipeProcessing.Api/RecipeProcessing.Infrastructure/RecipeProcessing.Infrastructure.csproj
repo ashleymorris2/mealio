@@ -26,9 +26,9 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="OpenAI" Version="2.0.0-beta.11">
-            <PrivateAssets>compile</PrivateAssets>
-        </PackageReference>
+        
+        <!-- Use PrivateAssets=compile to avoid exposing our OpenAI dependency downstream. -->
+        <PackageReference Include="OpenAI" Version="2.0.0-beta.11" PrivateAssets="compile" />
     </ItemGroup>
 
 </Project>

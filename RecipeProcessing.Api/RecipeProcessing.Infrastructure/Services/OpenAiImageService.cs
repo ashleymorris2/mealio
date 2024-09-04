@@ -9,11 +9,18 @@ internal class OpenAiImageService(IOptions<OpenAiConfig> options) : IImageServic
 {
     readonly OpenAiConfig _openAiConfig = options.Value;
     
-    public async Task<string> Process(Stream imageStream)
+    public async Task<string> Process(Stream imageStream, string imageFileContentType)
    {
+       BinaryData imageBytes = await BinaryData.FromStreamAsync(imageStream);
+       List<ChatMessage> messages = [
+           new UserChatMessage(
+               ChatMessageContentPart.CreateTextMessageContentPart("Please describe the following image."),
+               ChatMessageContentPart.CreateImageMessageContentPart(imageBytes, imageFileContentType))
+       ];
+       
        ChatClient chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o],_openAiConfig.ApiKey);
-       ChatCompletion completion = await chatClient.CompleteChatAsync("Say 'this is a test.'");
+       ChatCompletion chatCompletion = await chatClient.CompleteChatAsync(messages);
 
-       return completion.Content[0].Text;
+       return chatCompletion.Content[0].Text;
    }
 }

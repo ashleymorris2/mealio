@@ -13,7 +13,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IConfigureOptions<OpenAiConfig>, OpenAiConfigSetup>();
         services.AddTransient<IImageService, OpenAiImageService>();
-        
         return services;
     }
 }
