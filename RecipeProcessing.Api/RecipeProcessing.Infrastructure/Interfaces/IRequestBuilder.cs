@@ -2,5 +2,5 @@ namespace RecipeProcessing.Infrastructure.Interfaces;
 
 internal interface IRequestBuilder
 {
-    string Build();
+     Task<string> Build();
 }

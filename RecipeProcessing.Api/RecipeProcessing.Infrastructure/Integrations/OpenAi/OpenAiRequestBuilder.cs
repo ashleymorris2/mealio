@@ -1,27 +1,23 @@
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using OpenAI.Chat;
 using RecipeProcessing.Infrastructure.Interfaces;
 
 namespace RecipeProcessing.Infrastructure.Integrations.OpenAi;
 
-internal class OpenAiRequestBuilder(IOptions<OpenAiConfig> config) : IRequestBuilder
+internal class OpenAiRequestBuilder(IOptions<OpenAiConfig> options) : IRequestBuilder
 {
-    private readonly OpenAiConfig _openAiConfig = config.Value;
+    readonly OpenAiConfig _openAiConfig = options.Value;
 
-    public string Build()
+    public async Task<string> Build()
     {
-        var model = _openAiConfig.gptModels[GptModel.Gpt4o];
+        return await BuildRequest();
+    }
+    
+    private async Task<string> BuildRequest()
+    {
+        ChatClient chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o],_openAiConfig.ApiKey);
+        ChatCompletion completion = await chatClient.CompleteChatAsync("Say 'this is a test.'");
 
-        var request = new
-        {
-            model, 
-            messages = new[]
-            {
-                new { role = "system", content = "You are a helpful assistant." },
-                new { role = "user", content = "Hello!" }
-            }
-        };
-
-        return JsonConvert.SerializeObject(request);
+        return completion.Content[0].Text;
     }
 }
