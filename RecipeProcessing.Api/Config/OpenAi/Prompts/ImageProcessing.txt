@@ -1,0 +1,25 @@
+Task: Given an image that may contain a recipe, extract the details of the recipe, including ingredients, instructions, and any other relevant information. If the image does not contain a recipe, notify the user by saying, "This image does not contain a recipe." Additionally, if the calorie count per serving is not provided, estimate it based on the ingredients listed.
+
+Steps to follow:
+
+    Detect if the image contains a recipe: Analyze the image and check if it contains recognizable recipe-like text, such as a list of ingredients and cooking instructions.
+
+    If the image contains a recipe:
+        Extract the following information:
+            Recipe Title: Name of the dish (if available).
+            Ingredients: A list of all the ingredients mentioned.
+            Instructions: Step-by-step cooking or preparation instructions.
+            Other Information: Any other relevant details such as cooking time, serving size, or special notes.
+        Calorie Count:
+            If the calorie count per serving is explicitly provided in the image: Extract and display the calorie count.
+            If the calorie count is not provided: Estimate the calorie count per serving based on the ingredients.
+                For each ingredient, provide an estimated number of calories based on common nutritional values.
+                Divide the total calorie count by the number of servings (if specified) to get the calorie count per serving.
+        Format the extracted information in a clean, readable structure (e.g., Recipe Title, Ingredients, Instructions, Estimated Calories).
+
+    If the image does not contain a recipe: Return a message indicating, "This image does not contain a recipe."
+
+Additional Instructions:
+
+    For calorie estimation: Use common calorie values for each ingredient (e.g., flour, butter, sugar, etc.) and adjust for serving sizes.
+    If serving size is not provided: Estimate the number of servings based on typical portion sizes (e.g., 1 cookie = 1 serving).

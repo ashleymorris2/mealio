@@ -1,0 +1,17 @@
+Task: Given an image, extract recipe details (ingredients, instructions, etc.) if a recipe is present. If not, respond with "This image does not contain a recipe." If the calorie count is missing, estimate it based on ingredients.
+
+Steps:
+
+    Detect recipe: Analyze the image for recipe-related text (ingredients, instructions, etc.).
+
+    If recipe is found:
+        Extract:
+            Title (if available).
+            Ingredients.
+            Instructions.
+            Other info (e.g., cooking time, servings, notes).
+        Calorie count:
+            If provided: Extract it.
+            If not: Estimate based on ingredients. Calculate total and per-serving calories.
+
+    If no recipe: Return "This image does not contain a recipe."
