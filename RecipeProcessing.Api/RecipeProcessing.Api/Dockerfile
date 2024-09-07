@@ -14,18 +14,21 @@ ARG BUILD_CONFIGURATION=Release
 ENV ASPNETCORE_URLS=http://0.0.0.0:80
 
 # Copy the project files and restore dependencies
-COPY ["RecipeProcessing.Api/RecipeProcessing.Api.csproj", "./"]
+COPY ["RecipeProcessing.Api/RecipeProcessing.Api.csproj", "RecipeProcessing.Api/"]
 COPY ["RecipeProcessing.Infrastructure/RecipeProcessing.Infrastructure.csproj", "RecipeProcessing.Infrastructure/"]
-RUN dotnet restore "RecipeProcessing.Api.csproj"
+COPY ["RecipeProcessing.Core/RecipeProcessing.Core.csproj", "RecipeProcessing.Core/"]  
+RUN dotnet restore "RecipeProcessing.Api/RecipeProcessing.Api.csproj"
 
 # Copy all the source code
-COPY . .
+COPY RecipeProcessing.Api/. RecipeProcessing.Api/
+COPY RecipeProcessing.Infrastructure/. RecipeProcessing.Infrastructure/
+COPY RecipeProcessing.Core/. RecipeProcessing.Core/  
 
 # Build the project using the specified configuration
-RUN dotnet build "RecipeProcessing.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "RecipeProcessing.Api/RecipeProcessing.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Step 3: Publish the application
-RUN dotnet publish "RecipeProcessing.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+RUN dotnet publish "RecipeProcessing.Api/RecipeProcessing.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 # Step 4: Final runtime image for ASP.NET Core
 FROM base AS final
