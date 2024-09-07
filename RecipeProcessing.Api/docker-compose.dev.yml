@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # .NET development container
+  api:
+    build:
+      context: ./
+      dockerfile: RecipeProcessing.Api/Dockerfile
+      args:
+        BUILD_CONFIGURATION: Debug  # Use Debug mode for development
+    volumes:
+      - ./RecipeProcessing.Api:/app/src
+      - /app/bin
+      - /app/obj
+    ports:
+      - "5047:5047"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    command: ["dotnet", "watch", "run", "--project", "RecipeProcessing.csproj"]

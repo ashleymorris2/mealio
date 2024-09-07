@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: RecipeProcessing.Api/Dockerfile
+    ports:
+      - "8080:80"
+
+
+
+
