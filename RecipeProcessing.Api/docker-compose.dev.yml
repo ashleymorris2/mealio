@@ -11,7 +11,8 @@ services:
         BUILD_CONFIGURATION: Debug  # Use Debug mode for development
     volumes:
       - ./RecipeProcessing.Api:/src
-      - ~/.nuget/packages:/root/.nuget/packages 
+      - ~/.nuget/packages:/root/.nuget/packages
+      - ./Config/OpenAi/Prompts:/Config/OpenAi/Prompts
     ports:
       - "5047:5047"
     environment:
