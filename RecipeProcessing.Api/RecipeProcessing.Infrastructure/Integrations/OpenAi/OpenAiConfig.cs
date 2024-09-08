@@ -19,7 +19,7 @@ internal class PromptsConfig
 internal class OpenAiConfig()
 {
     public string ApiKey { get; set; } = string.Empty;
-    public PromptsConfig PromptPaths { get; set; } = new();
+    public PromptsConfig Prompts { get; set; } = new();
 
     public readonly Dictionary<GptModel, string> gptModels = new()
     {

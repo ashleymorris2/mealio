@@ -11,7 +11,7 @@ internal class OpenAiImageService(IOptions<OpenAiConfig> options) : IImageServic
 
     public async Task<string> Process(Stream imageStream, string imageFileContentType)
     {
-        var promptPath = Path.Combine(Directory.GetCurrentDirectory(), _openAiConfig.PromptPaths.ImageProcessing);
+        var promptPath = Path.Combine(Directory.GetCurrentDirectory(), _openAiConfig.Prompts.ImageProcessing);
         var prompt = await File.ReadAllTextAsync(promptPath);
 
         BinaryData imageBytes = await BinaryData.FromStreamAsync(imageStream);

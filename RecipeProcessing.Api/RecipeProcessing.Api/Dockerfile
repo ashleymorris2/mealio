@@ -10,9 +10,6 @@ WORKDIR /src
 # Define build arguments for configuration (Release/Debug) and environment
 ARG BUILD_CONFIGURATION=Release
 
-# Ensure the app listens on all interfaces
-#ENV ASPNETCORE_URLS=http://0.0.0.0:80
-
 # Copy the project files and restore dependencies
 COPY ["RecipeProcessing.Api/RecipeProcessing.Api.csproj", "RecipeProcessing.Api/"]
 COPY ["RecipeProcessing.Infrastructure/RecipeProcessing.Infrastructure.csproj", "RecipeProcessing.Infrastructure/"]
