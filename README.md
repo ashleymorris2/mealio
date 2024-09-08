@@ -1,4 +1,4 @@
-# meal-planner
+# mealio
 
 The readme is very much a work in progress
 
