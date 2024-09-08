@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   # .NET development container
   api:
     build:
@@ -8,7 +9,7 @@ services:
       dockerfile: RecipeProcessing.Api/Dockerfile
       target: dev
       args:
-        BUILD_CONFIGURATION: Debug  # Use Debug mode for development
+        BUILD_CONFIGURATION: Debug # Use Debug mode for development
     volumes:
       - ./RecipeProcessing.Api:/src
       - ~/.nuget/packages:/root/.nuget/packages
@@ -17,6 +18,23 @@ services:
       - "5047:5047"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:5047 
+      - ASPNETCORE_URLS=http://0.0.0.0:5047
       - OpenAi:ApiKey=${OpenAi_ApiKey}
-    command: ["dotnet", "watch", "run", "--project", "/src/RecipeProcessing.csproj"]
+    depends_on:
+      - db
+    command: [ "dotnet", "watch", "run", "--project", "/src/RecipeProcessing.csproj" ]
+
+  # Postgres database
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mealio_db_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
