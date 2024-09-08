@@ -6,14 +6,16 @@ services:
     build:
       context: ./
       dockerfile: RecipeProcessing.Api/Dockerfile
+      target: dev
       args:
         BUILD_CONFIGURATION: Debug  # Use Debug mode for development
     volumes:
-      - ./RecipeProcessing.Api:/app/src
-      - /app/bin
-      - /app/obj
+      - ./RecipeProcessing.Api:/src
+      - ~/.nuget/packages:/root/.nuget/packages 
     ports:
       - "5047:5047"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    command: ["dotnet", "watch", "run", "--project", "RecipeProcessing.csproj"]
+      - ASPNETCORE_URLS=http://0.0.0.0:5047 
+      - OpenAi:ApiKey=${OpenAi_ApiKey}
+    command: ["dotnet", "watch", "run", "--project", "/src/RecipeProcessing.csproj"]
