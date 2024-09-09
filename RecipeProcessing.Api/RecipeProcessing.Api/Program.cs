@@ -23,6 +23,9 @@ builder.Services.AddHttpClient();
 //Infrastructure
 builder.Services.AddInfrastructure();
 
+//Database
+builder.Services.ConfigureDatabase(builder.Configuration);
+
 #endregion
 
 var app = builder.Build();
