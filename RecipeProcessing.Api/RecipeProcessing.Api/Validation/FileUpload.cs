@@ -20,13 +20,13 @@ public class FileUpload : IValidatableObject
         if (!allowedTypes.Contains(contentType))
         {
             yield return new ValidationResult("Invalid file type. Only JPEG and PNG files are allowed.",
-                new[] { nameof(ImageFile) });
+                [nameof(ImageFile)]);
         }
-
+        
         if (ImageFile?.Length > 20 * 1024 * 1024)
         {
-            yield return new ValidationResult("File size exceeds the 20MB limit.", new[]
-                { nameof(ImageFile) });
+            yield return new ValidationResult("File size exceeds the 20MB limit.",
+                [nameof(ImageFile)]);
         }
     }
 }
