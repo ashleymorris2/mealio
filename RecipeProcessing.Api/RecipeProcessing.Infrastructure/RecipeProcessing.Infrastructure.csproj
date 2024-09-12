@@ -27,6 +27,8 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="NJsonSchema" Version="11.0.2" />
+        <PackageReference Include="NJsonSchema.NewtonsoftJson" Version="11.0.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
         
         <!-- Use PrivateAssets=compile to avoid exposing our OpenAI dependency downstream. -->

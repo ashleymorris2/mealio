@@ -6,6 +6,7 @@ using OpenAI.Chat;
 using RecipeProcessing.Infrastructure.Integrations.OpenAi;
 using RecipeProcessing.Infrastructure.Interfaces;
 using RecipeProcessing.Infrastructure.Persistence;
+using RecipeProcessing.Infrastructure.Repositories;
 using RecipeProcessing.Infrastructure.Services;
 
 namespace RecipeProcessing.Infrastructure;
@@ -16,6 +17,8 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IConfigureOptions<OpenAiConfig>, OpenAiConfigSetup>();
         services.AddTransient<IImageService, OpenAiImageService>();
+        services.AddTransient<IRecipeRepository, RecipeRepository>();
+        services.AddTransient<IRecipeService, RecipeService>();
         return services;
     }
 

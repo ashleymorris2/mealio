@@ -7,7 +7,7 @@ public class Recipe
     public int Servings { get; set; }
     public TimeSpan PreparationTime { get; set; }
     public TimeSpan TotalTime { get; set; } 
-    public required ICollection<Ingredient> Ingredients { get; set; }
-    public required ICollection<InstructionStep> Instructions { get; set; }
+    public  ICollection<Ingredient>? Ingredients { get; set; }
+    public  ICollection<InstructionStep>? Instructions { get; set; }
     public required NutritionalDetails NutritionPerServing { get; set; }
 }

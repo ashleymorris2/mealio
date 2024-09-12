@@ -25,6 +25,6 @@ internal class OpenAiConfig()
     {
         { GptModel.Gpt3_5Turbo, "gpt-3.5-turbo" },
         { GptModel.Gpt4, "gpt-4" },
-        { GptModel.Gpt4o, "gpt-4o" }
+        { GptModel.Gpt4o, "gpt-4o-2024-08-06" }
     };
 }
