@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
+using RecipeProcessing.Infrastructure.Caching;
 using RecipeProcessing.Infrastructure.Integrations.OpenAi;
 using RecipeProcessing.Infrastructure.Interfaces;
-using RecipeProcessing.Infrastructure.Persistence;
 using RecipeProcessing.Infrastructure.Repositories;
 using RecipeProcessing.Infrastructure.Services;
 
@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddSingleton<IConfigureOptions<OpenAiConfig>, OpenAiConfigSetup>();
+        services.AddSingleton<JsonSchemaCache>();
         services.AddTransient<IImageService, OpenAiImageService>();
         services.AddTransient<IRecipeRepository, RecipeRepository>();
         services.AddTransient<IRecipeService, RecipeService>();

@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Serialization;
-using NJsonSchema.Generation;
 using OpenAI.Chat;
 using RecipeProcessing.Core.Entities;
+using RecipeProcessing.Infrastructure.Caching;
 using RecipeProcessing.Infrastructure.Integrations.OpenAi;
 using RecipeProcessing.Infrastructure.Interfaces;
 
@@ -13,18 +12,20 @@ internal class OpenAiImageService : IImageService
 {
     private readonly OpenAiConfig _openAiConfig;
     private readonly ChatClient _chatClient;
+    private readonly JsonSchemaCache _jsonSchemaCache;
 
-    public OpenAiImageService(IOptions<OpenAiConfig> options)
+    public OpenAiImageService(IOptions<OpenAiConfig> options, JsonSchemaCache jsonSchemaCache)
     {
         _openAiConfig = options.Value;
         _chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o], _openAiConfig.ApiKey);
+        _jsonSchemaCache = jsonSchemaCache;
     }
 
     public async Task<string> Process(Stream imageStream, string imageFileContentType)
     {
         var promptPath = Path.Combine(Directory.GetCurrentDirectory(), _openAiConfig.Prompts.ImageProcessing);
         var prompt = await File.ReadAllTextAsync(promptPath);
-        var schema = JsonSchemaCache.GetOrGenerateSchemaForType<Recipe>();
+        var schema = _jsonSchemaCache.GetOrGenerateSchemaForType<Recipe>();
 
         ChatCompletionOptions options = new()
         {

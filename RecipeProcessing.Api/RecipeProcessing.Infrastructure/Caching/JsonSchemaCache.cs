@@ -1,47 +1,44 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 using NJsonSchema;
 using NJsonSchema.Generation;
 using NJsonSchema.NewtonsoftJson.Generation;
 using RecipeProcessing.Core.Entities;
 
-namespace RecipeProcessing.Infrastructure.Services;
+namespace RecipeProcessing.Infrastructure.Caching;
 
-public class JsonSchemaCache
+/// <summary>
+/// Manages the generation and caching of JSON schemas for given types
+/// </summary>
+internal class JsonSchemaCache
 {
-    private static readonly Dictionary<Type, JsonSchema> SchemaCache = new();
+    private  readonly ConcurrentDictionary<Type, JsonSchema> _schemaCache = new();
 
-    public static JsonSchema GetOrGenerateSchemaForType<T>()
+    public JsonSchema GetOrGenerateSchemaForType<T>()
     {
-        var type = typeof(T);
-        if (SchemaCache.TryGetValue(type, out var cachedSchema))
+        return _schemaCache.GetOrAdd(typeof(T), (type) =>
         {
-            return cachedSchema;
-        }
+            var settings = new NewtonsoftJsonSchemaGeneratorSettings()
+            {
+                DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull,
+                SchemaType = SchemaType.JsonSchema
+            };
 
-        var settings = new NewtonsoftJsonSchemaGeneratorSettings()
-        {
-            DefaultReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull,
-            SchemaType = SchemaType.JsonSchema
-        };
+            settings.SchemaProcessors.Add(new OpenAiFormatSchemaProcessor());
+            
+            // Create a generator with the custom settings
+            var generator = new JsonSchemaGenerator(settings);
 
-        settings.SchemaProcessors.Add(new OpenAiFormatSchemaProcessor());
+            // Generate the schema for the Recipe class
+            var schema = generator.Generate(typeof(Recipe));
+            schema.AllowAdditionalProperties = false;
 
-        // Create a generator with the custom settings
-        var generator = new JsonSchemaGenerator(settings);
-
-        // Generate the schema for the Recipe class
-        var schema = generator.Generate(typeof(Recipe));
-        schema.AllowAdditionalProperties = false;
-
-        // OpenAI require all properties to be marked as required.
-        // This could be done with a [Required] attribute on the Class of type<T>
-        // But would lead to tight coupling between business logic and application validation
-        SetAlSchemaPropertiesAsRequiredForType<Recipe>(schema);
-
-        // Cache the schema
-        SchemaCache[type] = schema;
-
-        return schema;
+            // OpenAI specify that all properties to be marked as required.
+            // This could be done with a [Required] attribute on the Class of type<T>
+            // But would lead to tight coupling between business logic and application validation
+            SetAlSchemaPropertiesAsRequiredForType<Recipe>(schema);
+            return schema;
+        });
     }
 
     private static void SetAlSchemaPropertiesAsRequiredForType<T>(JsonSchema schema)
@@ -95,7 +92,10 @@ public class JsonSchemaCache
     }
 }
 
-public class OpenAiFormatSchemaProcessor : ISchemaProcessor
+/// <summary>
+///  Process the generated schema to OpenAi specification 
+/// </summary>
+internal class OpenAiFormatSchemaProcessor : ISchemaProcessor
 {
     public void Process(SchemaProcessorContext context)
     {
@@ -105,7 +105,6 @@ public class OpenAiFormatSchemaProcessor : ISchemaProcessor
             context.Schema.Properties.Remove("Id");
         }
         
-        // OpenAi require
         foreach (var property in context.Schema.Properties.Values)
         {
             if (property.Format != null)
