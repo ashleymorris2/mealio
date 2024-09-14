@@ -1,17 +1,13 @@
-version: '3.8'
-
 services:
-
-  # .NET development container
   api:
+    # .NET development container
     build:
       context: ./
       dockerfile: RecipeProcessing.Api/Dockerfile
-      target: dev
       args:
         BUILD_CONFIGURATION: Debug # Use Debug mode for development
     volumes:
-      - ./RecipeProcessing.Api:/src
+      - ../RecipeProcessing.Api/:/src
       - ~/.nuget/packages:/root/.nuget/packages
       - ./Config/OpenAi/Prompts:/Config/OpenAi/Prompts
     ports:
@@ -20,12 +16,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:5047
       - OpenAi:ApiKey=${OpenAi_ApiKey}
+    networks:
+      - pg_network
     depends_on:
       - db
-    command: [ "dotnet", "watch", "run", "--project", "/src/RecipeProcessing.csproj" ]
+    command: [ "dotnet", "watch", "run", "--project", "../RecipeProcessing.Api/RecipeProcessing.Api.csproj" ]
 
-  # Postgres database
   db:
+    # Postgres database
     image: postgres:16
     container_name: postgres_db
     environment:
@@ -36,6 +34,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pg_network
 
   db_management:
     image: dpage/pgadmin4
