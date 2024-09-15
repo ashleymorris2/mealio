@@ -8,13 +8,13 @@ using RecipeProcessing.Infrastructure.Interfaces;
 
 namespace RecipeProcessing.Infrastructure.Services;
 
-internal class OpenAiImageService : IImageService
+internal class OpenAiAiImageAnalysisService : IAiImageAnalysisService
 {
     private readonly OpenAiConfig _openAiConfig;
     private readonly ChatClient _chatClient;
     private readonly JsonSchemaCache _jsonSchemaCache;
 
-    public OpenAiImageService(IOptions<OpenAiConfig> options, JsonSchemaCache jsonSchemaCache)
+    public OpenAiAiImageAnalysisService(IOptions<OpenAiConfig> options, JsonSchemaCache jsonSchemaCache)
     {
         _openAiConfig = options.Value;
         _chatClient = new ChatClient(_openAiConfig.gptModels[GptModel.Gpt4o], _openAiConfig.ApiKey);

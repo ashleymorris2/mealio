@@ -14,6 +14,22 @@ internal class JsonSchemaCache
 {
     private  readonly ConcurrentDictionary<Type, JsonSchema> _schemaCache = new();
 
+    /// <summary>
+    /// Retrieves or generates a JSON schema for the specified type <typeparamref name="T"/> in a
+    /// thread safe manner.
+    /// </summary>
+    /// <typeparam name="T">The type for which to retrieve or generate the schema.</typeparam>
+    /// <returns>
+    /// A <see cref="JsonSchema"/> for the specified type <typeparamref name="T"/>.
+    /// If a schema for the type exists in the cache, it is returned. Otherwise, a new schema is generated
+    /// and added to the cache.
+    /// </returns>
+    /// <remarks>
+    /// An <see cref="OpenAiFormatSchemaProcessor"/> is added to the schema processors list
+    /// to customise schema generation. The method also marks all properties in the schema as required,
+    /// following OpenAI's requirement. This avoids adding [Required] attributes to the <typeparamref name="T"/> class,
+    /// maintaining a separation between business logic and validation rules.
+    /// </remarks>
     public JsonSchema GetOrGenerateSchemaForType<T>()
     {
         return _schemaCache.GetOrAdd(typeof(T), (type) =>
@@ -82,7 +98,7 @@ internal class JsonSchemaCache
         elementType = null;
         return false;
     }
-
+    
     private static void SetAllPropertiesAsRequiredForNestedType(Type type, JsonSchema nestedSchema)
     {
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))

@@ -1,6 +1,6 @@
 namespace RecipeProcessing.Infrastructure.Interfaces;
 
-public interface IImageService
+public interface IAiImageAnalysisService
 {
     Task<string> Process(Stream imageStream, string imageFileContentType);
 }

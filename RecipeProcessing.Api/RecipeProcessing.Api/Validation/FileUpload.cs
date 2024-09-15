@@ -4,6 +4,7 @@ namespace RecipeProcessing.Api.Validation;
 
 public class FileUpload : IValidatableObject
 {
+    private const int MaxFileSize = 8;//Mb
     public required IFormFile? ImageFile { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -25,9 +26,9 @@ public class FileUpload : IValidatableObject
                 [nameof(ImageFile)]);
         }
 
-        if (ImageFile?.Length > 20 * 1024 * 1024)
+        if (ImageFile?.Length > MaxFileSize * 1024 * 1024)
         {
-            yield return new ValidationResult("File size exceeds the 20MB limit.",
+            yield return new ValidationResult($"File size exceeds the {MaxFileSize}MB limit.",
                 [nameof(ImageFile)]);
         }
     }
