@@ -5,7 +5,6 @@ using RecipeProcessing.Infrastructure.Caching;
 using RecipeProcessing.Infrastructure.Integrations.OpenAi;
 using RecipeProcessing.Infrastructure.Interfaces;
 
-
 namespace RecipeProcessing.Infrastructure.Services;
 
 internal class OpenAiAiImageAnalysisService : IAiImageAnalysisService

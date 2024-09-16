@@ -6,7 +6,10 @@ namespace RecipeProcessing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ImageController(IAiImageAnalysisService aiImageAnalysisService, IRecipeService recipeService, IHashService hashService) : ControllerBase
+public class ImageController(
+    IAiImageAnalysisService aiImageAnalysisService,
+    IRecipeService recipeService,
+    IHashService hashService) : ControllerBase
 {
     [HttpPost("process")]
     public async Task<IActionResult> Process(FileUpload fileUpload)
@@ -15,8 +18,7 @@ public class ImageController(IAiImageAnalysisService aiImageAnalysisService, IRe
         
         //check if unique
         //if not return
-        //else save to db and continue
-        
+
         //Process the image
         var result = await aiImageAnalysisService.Process(
             fileUpload.ImageFile!.OpenReadStream(),
@@ -24,7 +26,7 @@ public class ImageController(IAiImageAnalysisService aiImageAnalysisService, IRe
         );
         
         await recipeService.SaveRecipeFromResult(result);
-
+        
         return Ok(result);
     }
 }

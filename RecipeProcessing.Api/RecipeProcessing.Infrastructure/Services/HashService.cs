@@ -14,6 +14,7 @@ internal class HashService : IHashService
         {
             inputStream.Seek(0, SeekOrigin.Begin);
         }
+        
         using var sha256 = SHA256.Create();
         Byte[] hashedData = sha256.ComputeHash(inputStream);
         

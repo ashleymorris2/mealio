@@ -17,9 +17,13 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IConfigureOptions<OpenAiConfig>, OpenAiConfigSetup>();
         services.AddSingleton<JsonSchemaCache>();
+        
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+        
         services.AddTransient<IAiImageAnalysisService, OpenAiAiImageAnalysisService>();
-        services.AddTransient<IRecipeRepository, RecipeRepository>();
         services.AddTransient<IRecipeService, RecipeService>();
+        services.AddTransient<IHashService, HashService>();
+        
         return services;
     }
 
