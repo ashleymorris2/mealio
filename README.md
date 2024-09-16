@@ -1,6 +1,6 @@
 # mealio
 
-The readme is very much a work in progress
+The readme is a work in progress
 
 Explanation and background..
 
