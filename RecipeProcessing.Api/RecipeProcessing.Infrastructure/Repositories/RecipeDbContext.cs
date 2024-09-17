@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using Namotion.Reflection;
 using RecipeProcessing.Core.Entities;
 
 namespace RecipeProcessing.Infrastructure.Repositories;
 
 public class RecipeDbContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<Recipe> Recipes { get; init; }
+    public DbSet<ImageHash> ImageHashes { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,5 +27,10 @@ public class RecipeDbContext(DbContextOptions options) : DbContext(options)
         });
 
         modelBuilder.Entity<Recipe>().OwnsOne(r => r.NutritionPerServing);
+        
+        modelBuilder.Entity<ImageHash>()
+            .HasOne(h => h.Recipe)
+            .WithMany() 
+            .HasForeignKey(h => h.RecipeId);
     }
 }

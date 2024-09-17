@@ -4,7 +4,6 @@ namespace RecipeProcessing.Infrastructure.Interfaces
 {
     public interface IRecipeRepository
     {
-        Task AddRecipeAsync(Recipe recipe);
-        Task SaveChangesAsync();
+        Task AddAsync(Recipe recipe);
     }
 }

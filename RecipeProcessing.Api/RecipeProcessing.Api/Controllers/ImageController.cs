@@ -25,7 +25,7 @@ public class ImageController(
             fileUpload.ImageFile.ContentType
         );
         
-        await recipeService.SaveRecipeFromResult(result);
+        await recipeService.SaveRecipeFromResult(result, imageHash);
         
         return Ok(result);
     }

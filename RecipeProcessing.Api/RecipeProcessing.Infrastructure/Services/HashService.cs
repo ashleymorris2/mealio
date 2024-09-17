@@ -8,6 +8,7 @@ internal class HashService : IHashService
     public string ComputeHashFromStream(Stream inputStream)
     {
         ArgumentNullException.ThrowIfNull(inputStream);
+        
         if (inputStream.Length == 0) throw new ArgumentException("Input stream is empty.");
         
         if (inputStream.CanSeek)

@@ -18,10 +18,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IConfigureOptions<OpenAiConfig>, OpenAiConfigSetup>();
         services.AddSingleton<JsonSchemaCache>();
         
-        services.AddScoped<IRecipeRepository, RecipeRepository>();
+        services.AddScoped<IRecipeService, RecipeService>();
         
         services.AddTransient<IAiImageAnalysisService, OpenAiAiImageAnalysisService>();
-        services.AddTransient<IRecipeService, RecipeService>();
         services.AddTransient<IHashService, HashService>();
         
         return services;
@@ -31,6 +30,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<RecipeDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+        services.AddScoped<IImageHashRepository, ImageHashRepository>();
+        
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }

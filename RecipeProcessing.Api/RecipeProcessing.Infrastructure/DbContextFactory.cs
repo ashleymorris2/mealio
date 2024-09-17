@@ -1,9 +1,10 @@
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using System.Text.RegularExpressions;
+using RecipeProcessing.Infrastructure.Repositories;
 
-namespace RecipeProcessing.Infrastructure.Repositories
+namespace RecipeProcessing.Infrastructure
 {
     public partial class RecipeDbContextFactory : IDesignTimeDbContextFactory<RecipeDbContext>
     {
