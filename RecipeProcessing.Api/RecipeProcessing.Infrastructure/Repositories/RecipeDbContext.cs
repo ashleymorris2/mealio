@@ -3,7 +3,7 @@ using RecipeProcessing.Core.Entities;
 
 namespace RecipeProcessing.Infrastructure.Repositories;
 
-public class RecipeDbContext(DbContextOptions options) : DbContext(options)
+internal class RecipeDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Recipe> Recipes { get; init; }
     public DbSet<ImageHash> ImageHashes { get; set; }

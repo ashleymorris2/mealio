@@ -5,8 +5,8 @@ namespace RecipeProcessing.Infrastructure.Interfaces;
 
 public interface IUnitOfWork
 {
-    public IRecipeRepository RecipeRepository { get; }
-    public IImageHashRepository ImageHashRepository { get; }
+    internal IRecipeRepository RecipeRepository { get; }
+    internal IImageHashRepository ImageHashRepository { get; }
 
     public Task<IDbContextTransaction> BeginTransactionAsync();
     Task SaveAsync();

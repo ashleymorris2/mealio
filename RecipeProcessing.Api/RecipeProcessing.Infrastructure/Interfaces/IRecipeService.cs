@@ -4,5 +4,6 @@ namespace RecipeProcessing.Infrastructure.Interfaces;
 
 public interface IRecipeService
 {
-    Task SaveRecipeFromResult(string recipe, string imageHash);
+    Task SaveRecipeFromResult(string recipe, string hash);
+    public Task<Recipe?> GetRecipeByImageHash(string hash);
 }

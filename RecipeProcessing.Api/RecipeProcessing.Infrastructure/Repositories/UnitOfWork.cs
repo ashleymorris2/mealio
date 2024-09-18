@@ -3,7 +3,7 @@ using RecipeProcessing.Infrastructure.Interfaces;
 
 namespace RecipeProcessing.Infrastructure.Repositories;
 
-public class UnitOfWork(RecipeDbContext context) : IUnitOfWork
+internal class UnitOfWork(RecipeDbContext context) : IUnitOfWork
 {
     private RecipeRepository? _recipeRepository;
     private IImageHashRepository? _imageHashRepository;

@@ -1,8 +1,9 @@
 using RecipeProcessing.Core.Entities;
 
-namespace RecipeProcessing.Infrastructure.Repositories;
+namespace RecipeProcessing.Infrastructure.Interfaces;
 
-public interface IImageHashRepository
+internal interface IImageHashRepository
 {
     public Task AddAsync(ImageHash imageHash);
+    public Task<ImageHash?> GetAsync(string hash);
 }

@@ -15,11 +15,13 @@ public class ImageController(
     public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         var imageHash = hashService.ComputeHashFromStream(fileUpload.ImageFile!.OpenReadStream());
+        var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
         
-        //check if unique
-        //if not return
-
-        //Process the image
+        if (existingRecipe != null)
+        {
+            return Ok(existingRecipe);
+        }
+        
         var result = await aiImageAnalysisService.Process(
             fileUpload.ImageFile!.OpenReadStream(),
             fileUpload.ImageFile.ContentType
