@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using RecipeProcessing.Infrastructure.Caching;
 using RecipeProcessing.Infrastructure.Integrations.OpenAi;
 using RecipeProcessing.Infrastructure.Interfaces;
+using RecipeProcessing.Infrastructure.Queues;
 using RecipeProcessing.Infrastructure.Repositories;
 using RecipeProcessing.Infrastructure.Services;
 using StackExchange.Redis;
@@ -28,12 +29,13 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
     {
-        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:Rediss");
+        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:RedisConnection");
         services.AddSingleton<IConnectionMultiplexer>(
             ConnectionMultiplexer.Connect(
                 redisConnectionString ?? throw new InvalidOperationException(nameof(redisConnectionString))
             )
         );
+        services.AddSingleton<IQueueService, RedisStreamQueueService>();
 
         return services;
     }
@@ -41,7 +43,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<RecipeDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("DatabaseConnection")));
 
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<IImageHashRepository, ImageHashRepository>();

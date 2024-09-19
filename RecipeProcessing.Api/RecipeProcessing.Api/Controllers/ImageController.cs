@@ -9,23 +9,29 @@ namespace RecipeProcessing.Api.Controllers;
 public class ImageController(
     IAiImageAnalysisService aiImageAnalysisService,
     IRecipeService recipeService,
+    IQueueService queueService,
     IHashService hashService) : ControllerBase
 {
     [HttpPost("process")]
     public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         var imageHash = hashService.ComputeFromStream(fileUpload.ImageFile!.OpenReadStream());
-        var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
+        // var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
+        //
+        // if (existingRecipe != null) return Ok(existingRecipe);
+
+        // var result = await aiImageAnalysisService.Process(
+        //     fileUpload.ImageFile!.OpenReadStream(),
+        //     fileUpload.ImageFile.ContentType
+        // );
+        //
+        // await recipeService.SaveRecipeFromResult(result, imageHash);
         
-        if (existingRecipe != null) return Ok(existingRecipe);
-        
-        var result = await aiImageAnalysisService.Process(
+        await queueService.EnqueueImageProcessingTaskAsync(
             fileUpload.ImageFile!.OpenReadStream(),
-            fileUpload.ImageFile.ContentType
+            fileUpload.ImageFile.Name, imageHash
         );
 
-        await recipeService.SaveRecipeFromResult(result, imageHash);
-
-        return Ok(result);
+        return Accepted();
     }
 }
