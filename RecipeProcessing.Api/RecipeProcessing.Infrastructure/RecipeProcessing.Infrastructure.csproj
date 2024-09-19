@@ -40,6 +40,7 @@
         
         <!-- Use PrivateAssets=compile to avoid exposing our OpenAI dependency downstream. -->
         <PackageReference Include="OpenAI" Version="2.0.0-beta.11" PrivateAssets="compile" />
+        <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
     </ItemGroup>
 
     <ItemGroup>

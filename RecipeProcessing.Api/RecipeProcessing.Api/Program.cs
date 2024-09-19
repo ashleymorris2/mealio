@@ -26,6 +26,9 @@ builder.Services.AddInfrastructure();
 //Database
 builder.Services.ConfigureDatabase(builder.Configuration);
 
+//Redis
+builder.Services.AddRedis(builder.Configuration);
+
 #endregion
 
 var app = builder.Build();

@@ -37,6 +37,14 @@ services:
     networks:
       - pg_network
 
+  redis:
+    image: redis:alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   db_management:
     image: dpage/pgadmin4
     environment:
@@ -55,3 +63,4 @@ networks:
 
 volumes:
   postgres_data:
+  redis_data:

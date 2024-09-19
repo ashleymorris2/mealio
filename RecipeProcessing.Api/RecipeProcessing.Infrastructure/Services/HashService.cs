@@ -5,7 +5,7 @@ namespace RecipeProcessing.Infrastructure.Services;
 
 internal class HashService : IHashService
 {
-    public string ComputeHashFromStream(Stream inputStream)
+    public string ComputeFromStream(Stream inputStream)
     {
         ArgumentNullException.ThrowIfNull(inputStream);
         
