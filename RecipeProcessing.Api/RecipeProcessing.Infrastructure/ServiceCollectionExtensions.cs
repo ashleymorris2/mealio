@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<IAiImageAnalysisService, OpenAiAiImageAnalysisService>();
         services.AddTransient<IHashService, HashService>();
+        services.AddTransient<IFileService, FileService>();
 
         return services;
     }

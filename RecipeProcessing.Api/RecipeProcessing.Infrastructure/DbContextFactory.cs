@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using RecipeProcessing.Infrastructure.Repositories;
 
-namespace RecipeProcessing.Infrastructure.Repositories
+namespace RecipeProcessing.Infrastructure
 {
     internal partial class RecipeDbContextFactory : IDesignTimeDbContextFactory<RecipeDbContext>
     {

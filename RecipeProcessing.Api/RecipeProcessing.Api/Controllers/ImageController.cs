@@ -7,7 +7,7 @@ namespace RecipeProcessing.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ImageController(
-    IAiImageAnalysisService aiImageAnalysisService,
+    IFileService fileService,
     IRecipeService recipeService,
     IQueueService queueService,
     IHashService hashService) : ControllerBase
@@ -16,9 +16,9 @@ public class ImageController(
     public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         var imageHash = hashService.ComputeFromStream(fileUpload.ImageFile!.OpenReadStream());
-        // var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
-        //
-        // if (existingRecipe != null) return Ok(existingRecipe);
+        var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
+
+        if (existingRecipe != null) return Ok(existingRecipe);
 
         // var result = await aiImageAnalysisService.Process(
         //     fileUpload.ImageFile!.OpenReadStream(),
@@ -27,9 +27,11 @@ public class ImageController(
         //
         // await recipeService.SaveRecipeFromResult(result, imageHash);
         
+        var imagePath = await fileService.SaveTemporaryFileAsync(fileUpload.ImageFile.OpenReadStream(),
+            fileUpload.ImageFile.ContentType);
+        
         await queueService.EnqueueImageProcessingTaskAsync(
-            fileUpload.ImageFile!.OpenReadStream(),
-            fileUpload.ImageFile.Name, imageHash
+          imagePath, imageHash
         );
 
         return Accepted();

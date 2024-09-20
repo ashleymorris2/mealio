@@ -21,4 +21,8 @@
       <ProjectReference Include="..\RecipeProcessing.Infrastructure\RecipeProcessing.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\" />
+    </ItemGroup>
+
 </Project>
