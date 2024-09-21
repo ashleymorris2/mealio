@@ -16,9 +16,9 @@ public class ImageController(
     public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         var imageHash = hashService.ComputeFromStream(fileUpload.ImageFile!.OpenReadStream());
-        var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
-
-        if (existingRecipe != null) return Ok(existingRecipe);
+        // var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
+        //
+        // if (existingRecipe != null) return Ok(existingRecipe);
 
         // var result = await aiImageAnalysisService.Process(
         //     fileUpload.ImageFile!.OpenReadStream(),

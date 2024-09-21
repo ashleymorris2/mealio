@@ -5,15 +5,35 @@ namespace RecipeProcessing.Infrastructure.Queues;
 
 public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueService
 {
-    public async Task EnqueueImageProcessingTaskAsync(string filePath, string imageHash, string fileExtension)
+    public async Task EnsureConsumerGroupExistsAsync(string streamName, string groupName)
     {
         var database = redis.GetDatabase();
+
+        try
+        {
+            // Create the consumer group
+            await database.StreamCreateConsumerGroupAsync(streamName, groupName, position: StreamPosition.NewMessages);
+        }
+        catch (RedisServerException ex) when (ex.Message.Contains("BUSYGROUP"))
+        {
+        }
+        catch (RedisServerException ex)
+        {
+            throw;
+        }
+    }
+
+    public async Task EnqueueImageProcessingTaskAsync(string filePath, string imageHash, string mimeType)
+    {
+        var database = redis.GetDatabase();
+
+        
 
         await database.StreamAddAsync("image-processing-stream",
             [
                 new NameValueEntry(nameof(filePath), filePath),
                 new NameValueEntry(nameof(imageHash), imageHash),
-                new NameValueEntry(nameof(fileExtension), fileExtension),
+                new NameValueEntry(nameof(mimeType), mimeType),
             ],
             maxLength: 500,
             useApproximateMaxLength: true
@@ -23,6 +43,8 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
     public async Task<StreamEntry[]> GetPendingImageTasksAsync()
     {
         var database = redis.GetDatabase();
+        
+        await EnsureConsumerGroupExistsAsync("image-processing-stream", "image-process-group");
 
         var entries = await database.StreamReadGroupAsync(
             key: "image-processing-stream",
@@ -34,11 +56,11 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
 
         return entries;
     }
-    
+
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
     {
         var db = redis.GetDatabase();
-        
+
         // Acknowledge the message as processed
         await db.StreamAcknowledgeAsync("image-processing-stream", "image-process-group", streamEntryId);
     }

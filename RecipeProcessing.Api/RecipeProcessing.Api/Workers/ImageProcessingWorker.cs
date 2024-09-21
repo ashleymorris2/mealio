@@ -29,7 +29,6 @@ public class ImageProcessingWorker(
             }
             else
             {
-                // No tasks found, increment the delay
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
    
             }

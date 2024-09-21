@@ -1,3 +1,4 @@
+using RecipeProcessing.Api.Workers;
 using RecipeProcessing.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,8 @@ builder.Services.ConfigureDatabase(builder.Configuration);
 
 //Redis
 builder.Services.AddRedis(builder.Configuration);
+
+builder.Services.AddHostedService<ImageProcessingWorker>();
 
 #endregion
 
