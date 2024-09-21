@@ -23,15 +23,13 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
     {
         var database = redis.GetDatabase();
         
-        // Blocking read: Wait for new entries
         var entries = await database.StreamReadGroupAsync(
             key: "image-processing-stream", 
             groupName:"image-process-group", 
             consumerName:"worker-1",  
-            ">", 
+            position: ">", 
             count: 1, 
-            CommandFlags.None,
-            0);
+            0); // Blocking indefinitely
         
         return entries;
     }
