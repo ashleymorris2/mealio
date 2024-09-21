@@ -26,12 +26,16 @@ public class ImageController(
         // );
         //
         // await recipeService.SaveRecipeFromResult(result, imageHash);
-        
-        var imagePath = await fileService.SaveTemporaryFileAsync(fileUpload.ImageFile.OpenReadStream(),
-            fileUpload.ImageFile.ContentType);
-        
+
+        var (imagePath, imageExtension) = await fileService.SaveTemporaryFileAsync(
+            fileUpload.ImageFile.OpenReadStream(),
+            fileUpload.ImageFile.ContentType
+        );
+
         await queueService.EnqueueImageProcessingTaskAsync(
-          imagePath, imageHash
+            imagePath,
+            imageHash,
+            imageExtension
         );
 
         return Accepted();
