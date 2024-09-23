@@ -4,6 +4,7 @@ namespace RecipeProcessing.Infrastructure.Interfaces;
 
 public interface IQueueService
 {
-    Task EnqueueImageProcessingTaskAsync(string filePath, string imageHash, string extension);
+    Task AddImageProcessingTaskAsync(string filePath, string imageHash, string extension);
     Task<StreamEntry[]> GetPendingImageTasksAsync();
+    Task AcknowledgeProcessedTaskAsync(string streamEntryId);
 }

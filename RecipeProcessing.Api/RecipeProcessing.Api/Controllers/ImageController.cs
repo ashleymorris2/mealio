@@ -16,23 +16,16 @@ public class ImageController(
     public async Task<IActionResult> Process(FileUpload fileUpload)
     {
         var imageHash = hashService.ComputeFromStream(fileUpload.ImageFile!.OpenReadStream());
-        // var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
-        //
-        // if (existingRecipe != null) return Ok(existingRecipe);
-
-        // var result = await aiImageAnalysisService.Process(
-        //     fileUpload.ImageFile!.OpenReadStream(),
-        //     fileUpload.ImageFile.ContentType
-        // );
-        //
-        // await recipeService.SaveRecipeFromResult(result, imageHash);
-
+        var existingRecipe = await recipeService.GetRecipeByImageHash(imageHash);
+        
+        if (existingRecipe != null) return Ok(existingRecipe);
+        
         var (imagePath, imageExtension) = await fileService.SaveTemporaryFileAsync(
             fileUpload.ImageFile.OpenReadStream(),
             fileUpload.ImageFile.ContentType
         );
 
-        await queueService.EnqueueImageProcessingTaskAsync(
+        await queueService.AddImageProcessingTaskAsync(
             imagePath,
             imageHash,
             imageExtension

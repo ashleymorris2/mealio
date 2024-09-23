@@ -5,31 +5,14 @@ namespace RecipeProcessing.Infrastructure.Queues;
 
 public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueService
 {
-    public async Task EnsureConsumerGroupExistsAsync(string streamName, string groupName)
+    private const string StreamName = "image-processing-stream";
+    private const string GroupName = "image-process-group";
+
+    public async Task AddImageProcessingTaskAsync(string filePath, string imageHash, string mimeType)
     {
-        var database = redis.GetDatabase();
+        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
 
-        try
-        {
-            // Create the consumer group
-            await database.StreamCreateConsumerGroupAsync(streamName, groupName, position: StreamPosition.NewMessages);
-        }
-        catch (RedisServerException ex) when (ex.Message.Contains("BUSYGROUP"))
-        {
-        }
-        catch (RedisServerException ex)
-        {
-            throw;
-        }
-    }
-
-    public async Task EnqueueImageProcessingTaskAsync(string filePath, string imageHash, string mimeType)
-    {
-        var database = redis.GetDatabase();
-
-        
-
-        await database.StreamAddAsync("image-processing-stream",
+        await database.StreamAddAsync(StreamName,
             [
                 new NameValueEntry(nameof(filePath), filePath),
                 new NameValueEntry(nameof(imageHash), imageHash),
@@ -42,13 +25,11 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
 
     public async Task<StreamEntry[]> GetPendingImageTasksAsync()
     {
-        var database = redis.GetDatabase();
-        
-        await EnsureConsumerGroupExistsAsync("image-processing-stream", "image-process-group");
+        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
 
         var entries = await database.StreamReadGroupAsync(
-            key: "image-processing-stream",
-            groupName: "image-process-group",
+            key: StreamName,
+            groupName: GroupName,
             consumerName: "worker-1",
             position: ">",
             count: 1
@@ -59,9 +40,29 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
 
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
     {
-        var db = redis.GetDatabase();
+        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
+        
+        await database.StreamAcknowledgeAsync(StreamName, GroupName, streamEntryId);
+    }
 
-        // Acknowledge the message as processed
-        await db.StreamAcknowledgeAsync("image-processing-stream", "image-process-group", streamEntryId);
+    private async Task<IDatabase> EnsureRedisInitialisedAsync(string streamName, string groupName)
+    {
+        var database = redis.GetDatabase();
+
+        //Create stream if it doesn't exist
+        if (await database.KeyExistsAsync(streamName) ||
+            (await database.StreamGroupInfoAsync(streamName)).Any(x => x.Name == groupName)) return database;
+        
+        try
+        {
+            await database.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
+        }
+        catch (RedisServerException ex) when (ex.Message.Contains("BUSYGROUP"))
+        {
+            // Group already exists, no further action needed
+            //Log here
+        }
+        
+        return database;
     }
 }
