@@ -17,8 +17,6 @@ If running in Docker a `.env` file can be created in the project root.
 
 Here’s an overview of the variables and what they are for:
 
-- **COMPOSE_PROJECT_NAME:** The name of the project when using Docker Compose. _(optional)_
-  - Example: `myproject`
 - **OpenAi:ApiKey:** The API key for accessing OpenAI services. _(required if using OpenAI)_
   - Example: sk-xxxxxxxxxxxxxxxxxxxxxx
 
