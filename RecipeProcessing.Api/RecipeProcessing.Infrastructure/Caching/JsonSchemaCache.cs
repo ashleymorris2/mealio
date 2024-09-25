@@ -12,7 +12,7 @@ namespace RecipeProcessing.Infrastructure.Caching;
 /// </summary>
 internal class JsonSchemaCache
 {
-    private  readonly ConcurrentDictionary<Type, JsonSchema> _schemaCache = new();
+    private readonly ConcurrentDictionary<Type, JsonSchema> _schemaCache = new();
 
     /// <summary>
     /// Retrieves or generates a JSON schema for the specified type <typeparamref name="T"/> in a
@@ -45,7 +45,7 @@ internal class JsonSchemaCache
             // Create a generator with the custom settings
             var generator = new JsonSchemaGenerator(settings);
 
-            // Generate the schema for the Recipe class
+            // Generate the schema
             var schema = generator.Generate(typeof(Recipe));
             schema.AllowAdditionalProperties = false;
 
@@ -84,7 +84,7 @@ internal class JsonSchemaCache
         }
     }
 
-    // Check if the type is a collection (List<T>, ICollection<T>, IEnumerable<T>) and return the element type
+    // Checks if the type is a collection (List<T>, ICollection<T>, IEnumerable<T>) and return the element type
     private static bool IsCollection(Type type, out Type? elementType)
     {
         // Check if it's a generic type (e.g., List<T>, ICollection<T>)

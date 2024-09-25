@@ -23,14 +23,14 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
         );
     }
 
-    public async Task<StreamEntry[]> GetPendingImageTasksAsync()
+    public async Task<StreamEntry[]> GetPendingImageTasksAsync(string consumerName)
     {
         var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
 
         var entries = await database.StreamReadGroupAsync(
             key: StreamName,
             groupName: GroupName,
-            consumerName: "worker-1",
+            consumerName: consumerName,
             position: ">",
             count: 1
         );
@@ -41,18 +41,14 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
     {
         var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
-        
         await database.StreamAcknowledgeAsync(StreamName, GroupName, streamEntryId);
     }
 
     private async Task<IDatabase> EnsureRedisInitialisedAsync(string streamName, string groupName)
     {
         var database = redis.GetDatabase();
-
-        //Create stream if it doesn't exist
-        if (await database.KeyExistsAsync(streamName) ||
-            (await database.StreamGroupInfoAsync(streamName)).Any(x => x.Name == groupName)) return database;
         
+        //Apparently the only threadsafe way to check if a consumer group exists
         try
         {
             await database.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");

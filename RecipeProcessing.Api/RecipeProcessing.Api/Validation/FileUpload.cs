@@ -13,7 +13,7 @@ public class FileUpload : IValidatableObject
         {
             yield return new ValidationResult("No file uploaded.",
                 [nameof(ImageFile)]);
-
+            
             yield break;
         }
 

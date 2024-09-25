@@ -4,7 +4,7 @@ using RecipeProcessing.Infrastructure.Repositories;
 
 namespace RecipeProcessing.Infrastructure
 {
-    internal partial class RecipeDbContextFactory : IDesignTimeDbContextFactory<RecipeDbContext>
+    internal class RecipeDbContextFactory : IDesignTimeDbContextFactory<RecipeDbContext>
     {
         public RecipeDbContext CreateDbContext(string[] args)
         {

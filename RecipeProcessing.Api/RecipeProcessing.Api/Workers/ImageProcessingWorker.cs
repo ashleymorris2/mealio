@@ -5,6 +5,7 @@ namespace RecipeProcessing.Api.Workers;
 
 public class ImageProcessingWorker(
     IAiImageAnalysisService imageProcessor,
+    IRecipeService recipeService,
     IFileService fileService,
     IQueueService redisQueueService
 ) : BackgroundService
@@ -13,19 +14,32 @@ public class ImageProcessingWorker(
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var entries = await redisQueueService.GetPendingImageTasksAsync();
+            var entries = await redisQueueService.GetPendingImageTasksAsync(consumerName: "worker-1");
             if (entries.Length != 0)
             {
                 foreach (var entry in entries)
                 {
                     try
                     {
-                        await ProcessImageQueueTask(stoppingToken, entry);
-                        await redisQueueService.AcknowledgeProcessedTaskAsync(entry.Id);
+                        var filePath = entry.Values.FirstOrDefault(v => v.Name == "filePath").Value.ToString();
+                        var mimeType = entry.Values.FirstOrDefault(v => v.Name == "mimeType").Value.ToString();
+                        var imageHash = entry.Values.FirstOrDefault(v => v.Name == "imageHash").Value.ToString();
+
+                        var result = await ProcessImageQueueTask(
+                            filePath: filePath,
+                            mimeType: mimeType,
+                            stoppingToken
+                        );
+
+                        await redisQueueService.AcknowledgeProcessedTaskAsync(entry.Id!);
+                        await recipeService.SaveRecipeFromResult(result, imageHash);
+
+                        fileService.DeleteTemporaryFile(filePath);
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine(e);
+                        //add logging
                     }
                 }
             }
@@ -36,14 +50,11 @@ public class ImageProcessingWorker(
         }
     }
 
-    private async Task ProcessImageQueueTask(CancellationToken stoppingToken, StreamEntry entry)
+    private async Task<string> ProcessImageQueueTask(string filePath, string mimeType, CancellationToken stoppingToken)
     {
-        var imagePath = entry.Values.FirstOrDefault(v => v.Name == "filePath").Value.ToString();
-        var fileExtension = entry.Values.FirstOrDefault(v => v.Name == "mimeType").Value.ToString();
-
-        var fileBytes = await File.ReadAllBytesAsync(imagePath, stoppingToken);
+        var fileBytes = await File.ReadAllBytesAsync(filePath, stoppingToken);
         using var memStream = new MemoryStream(fileBytes);
 
-        await imageProcessor.Process(memStream, fileExtension);
+        return await imageProcessor.Process(memStream, mimeType);
     }
 }
