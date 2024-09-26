@@ -5,56 +5,49 @@ namespace RecipeProcessing.Api.Workers;
 
 public class ImageProcessingWorker(
     IAiImageAnalysisService imageProcessor,
-    IRecipeService recipeService,
     IFileService fileService,
-    IQueueService redisQueueService
+    IQueueService queueService,
+    IServiceScopeFactory serviceScopeFactory
 ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var entries = await redisQueueService.GetPendingImageTasksAsync(consumerName: "worker-1");
-            if (entries.Length != 0)
+            await foreach (var entry in queueService.GetPendingImageTasksAsync().WithCancellation(stoppingToken))
             {
-                foreach (var entry in entries)
+                using var scope = serviceScopeFactory.CreateScope();
+                var recipeService = scope.ServiceProvider.GetRequiredService<IRecipeService>();
+                
+                try
                 {
-                    try
-                    {
-                        var filePath = entry.Values.FirstOrDefault(v => v.Name == "filePath").Value.ToString();
-                        var mimeType = entry.Values.FirstOrDefault(v => v.Name == "mimeType").Value.ToString();
-                        var imageHash = entry.Values.FirstOrDefault(v => v.Name == "imageHash").Value.ToString();
+                    var result = await ProcessImageQueueTask(
+                        filePath: entry.FilePath,
+                        mimeType: entry.MimeType,
+                        stoppingToken
+                    );
 
-                        var result = await ProcessImageQueueTask(
-                            filePath: filePath,
-                            mimeType: mimeType,
-                            stoppingToken
-                        );
+                    await queueService.AcknowledgeProcessedTaskAsync(entry.StreamEntryId);
+                    await recipeService.SaveRecipeFromResult(result, entry.ImageHash);
 
-                        await redisQueueService.AcknowledgeProcessedTaskAsync(entry.Id!);
-                        await recipeService.SaveRecipeFromResult(result, imageHash);
-
-                        fileService.DeleteTemporaryFile(filePath);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        //add logging
-                    }
+                    fileService.DeleteTemporaryFile(entry.FilePath);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    //add logging
                 }
             }
-            else
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
-            }
+            
+            await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }
 
     private async Task<string> ProcessImageQueueTask(string filePath, string mimeType, CancellationToken stoppingToken)
     {
         var fileBytes = await File.ReadAllBytesAsync(filePath, stoppingToken);
-        using var memStream = new MemoryStream(fileBytes);
+        using var memoryStream = new MemoryStream(fileBytes);
 
-        return await imageProcessor.Process(memStream, mimeType);
+        return await imageProcessor.Process(memoryStream, mimeType);
     }
 }

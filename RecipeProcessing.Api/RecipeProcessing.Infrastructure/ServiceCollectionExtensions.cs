@@ -36,7 +36,9 @@ public static class ServiceCollectionExtensions
                 redisConnectionString ?? throw new InvalidOperationException(nameof(redisConnectionString))
             )
         );
-        services.AddSingleton<IQueueService, RedisStreamQueueService>();
+        
+        services.Configure<RedisQueueOptions>(configuration.GetSection("RedisQueue"));
+        services.AddSingleton<IQueueService, RedisQueueService>();
 
         return services;
     }

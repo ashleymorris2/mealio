@@ -1,13 +1,17 @@
+using Microsoft.Extensions.Options;
 using RecipeProcessing.Infrastructure.Interfaces;
+using RecipeProcessing.Infrastructure.Models;
 using StackExchange.Redis;
 
 namespace RecipeProcessing.Infrastructure.Queues;
 
-public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueService
+internal class RedisQueueService(IConnectionMultiplexer redis, IOptions<RedisQueueOptions> options) : IQueueService
 {
     private const string StreamName = "image-processing-stream";
     private const string GroupName = "image-process-group";
-
+    
+    private readonly string _consumerName = options.Value.ConsumerName;
+    
     public async Task AddImageProcessingTaskAsync(string filePath, string imageHash, string mimeType)
     {
         var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
@@ -23,19 +27,31 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
         );
     }
 
-    public async Task<StreamEntry[]> GetPendingImageTasksAsync(string consumerName)
+    public async IAsyncEnumerable<ImageProcessingTask> GetPendingImageTasksAsync()
     {
         var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
 
         var entries = await database.StreamReadGroupAsync(
             key: StreamName,
             groupName: GroupName,
-            consumerName: consumerName,
+            consumerName: _consumerName,
             position: ">",
             count: 1
         );
 
-        return entries;
+        foreach (var entry in entries)
+        {
+            yield return new ImageProcessingTask()
+            {
+                FilePath = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.FilePath)).Value
+                    .ToString(),
+                ImageHash = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.ImageHash)).Value
+                    .ToString(),
+                MimeType = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.MimeType)).Value
+                    .ToString(),
+                StreamEntryId = entry.Id.ToString()
+            };
+        }
     }
 
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
@@ -47,7 +63,7 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
     private async Task<IDatabase> EnsureRedisInitialisedAsync(string streamName, string groupName)
     {
         var database = redis.GetDatabase();
-        
+
         //Apparently the only threadsafe way to check if a consumer group exists
         try
         {
@@ -58,7 +74,7 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
             // Group already exists, no further action needed
             //Log here
         }
-        
+
         return database;
     }
 }
