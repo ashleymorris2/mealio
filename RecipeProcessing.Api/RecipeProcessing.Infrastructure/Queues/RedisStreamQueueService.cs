@@ -3,6 +3,14 @@ using StackExchange.Redis;
 
 namespace RecipeProcessing.Infrastructure.Queues;
 
+public class ImageProcessingTask
+{
+    public string FilePath { get; set; }
+    public string ImageHash { get; set; }
+    public string MimeType { get; set; }
+    public string StreamEntryId { get; set; }
+}
+
 public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueService
 {
     private const string StreamName = "image-processing-stream";
@@ -23,7 +31,7 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
         );
     }
 
-    public async Task<StreamEntry[]> GetPendingImageTasksAsync(string consumerName)
+    public async IAsyncEnumerable<ImageProcessingTask> GetPendingImageTasksAsync(string consumerName)
     {
         var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
 
@@ -35,7 +43,19 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
             count: 1
         );
 
-        return entries;
+        foreach (var entry in entries)
+        {
+            yield return new ImageProcessingTask()
+            {
+                FilePath = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.FilePath)).Value
+                    .ToString(),
+                ImageHash = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.ImageHash)).Value
+                    .ToString(),
+                MimeType = entry.Values.FirstOrDefault(v => v.Name == nameof(ImageProcessingTask.MimeType)).Value
+                    .ToString(),
+                StreamEntryId = entry.Id.ToString()
+            };
+        }
     }
 
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
@@ -47,7 +67,7 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
     private async Task<IDatabase> EnsureRedisInitialisedAsync(string streamName, string groupName)
     {
         var database = redis.GetDatabase();
-        
+
         //Apparently the only threadsafe way to check if a consumer group exists
         try
         {
@@ -58,7 +78,7 @@ public class RedisStreamQueueService(IConnectionMultiplexer redis) : IQueueServi
             // Group already exists, no further action needed
             //Log here
         }
-        
+
         return database;
     }
 }
