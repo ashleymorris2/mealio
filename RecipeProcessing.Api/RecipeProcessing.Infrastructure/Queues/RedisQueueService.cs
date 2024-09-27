@@ -5,18 +5,25 @@ using StackExchange.Redis;
 
 namespace RecipeProcessing.Infrastructure.Queues;
 
-internal class RedisQueueService(IConnectionMultiplexer redis, IOptions<RedisQueueOptions> options) : IQueueService
+internal class RedisQueueService : IQueueService
 {
     private const string StreamName = "image-processing-stream";
     private const string GroupName = "image-process-group";
-    
-    private readonly string _consumerName = options.Value.ConsumerName;
-    
+
+    private readonly IDatabase _database;
+    private readonly string _consumerName;
+
+    public RedisQueueService(IConnectionMultiplexer redis, IOptions<RedisQueueOptions> options)
+    {
+        _database = redis.GetDatabase();
+        _consumerName = options.Value.ConsumerName;
+        
+        InitializeStreams();
+    }
+
     public async Task AddImageProcessingTaskAsync(string filePath, string imageHash, string mimeType)
     {
-        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
-
-        await database.StreamAddAsync(StreamName,
+        await _database.StreamAddAsync(StreamName,
             [
                 new NameValueEntry(nameof(filePath), filePath),
                 new NameValueEntry(nameof(imageHash), imageHash),
@@ -29,9 +36,7 @@ internal class RedisQueueService(IConnectionMultiplexer redis, IOptions<RedisQue
 
     public async IAsyncEnumerable<ImageProcessingTask> GetPendingImageTasksAsync()
     {
-        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
-
-        var entries = await database.StreamReadGroupAsync(
+        var entries = await _database.StreamReadGroupAsync(
             key: StreamName,
             groupName: GroupName,
             consumerName: _consumerName,
@@ -56,25 +61,22 @@ internal class RedisQueueService(IConnectionMultiplexer redis, IOptions<RedisQue
 
     public async Task AcknowledgeProcessedTaskAsync(string streamEntryId)
     {
-        var database = await EnsureRedisInitialisedAsync(StreamName, GroupName);
-        await database.StreamAcknowledgeAsync(StreamName, GroupName, streamEntryId);
+        await _database.StreamAcknowledgeAsync(StreamName, GroupName, streamEntryId);
     }
-
-    private async Task<IDatabase> EnsureRedisInitialisedAsync(string streamName, string groupName)
+    
+    private void InitializeStreams()
     {
-        var database = redis.GetDatabase();
-
-        //Apparently the only threadsafe way to check if a consumer group exists
-        try
+        if (_database.KeyExists(StreamName))
         {
-            await database.StreamCreateConsumerGroupAsync(streamName, groupName, "0-0");
+            var groups = _database.StreamGroupInfo(StreamName);
+            if (groups.All(group => group.Name != GroupName))
+            {
+                _database.StreamCreateConsumerGroup(StreamName, GroupName, "$", createStream: false);
+            }
         }
-        catch (RedisServerException ex) when (ex.Message.Contains("BUSYGROUP"))
+        else
         {
-            // Group already exists, no further action needed
-            //Log here
+            _database.StreamCreateConsumerGroup(StreamName, GroupName, "$", createStream: true);
         }
-
-        return database;
     }
 }

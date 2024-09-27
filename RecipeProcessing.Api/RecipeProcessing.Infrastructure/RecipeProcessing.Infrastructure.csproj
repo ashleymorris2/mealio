@@ -37,6 +37,7 @@
         <PackageReference Include="NJsonSchema" Version="11.0.2" />
         <PackageReference Include="NJsonSchema.NewtonsoftJson" Version="11.0.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+        <PackageReference Include="NRedisStack" Version="0.13.0" />
         
         <!-- Use PrivateAssets=compile to avoid exposing our OpenAI dependency downstream. -->
         <PackageReference Include="OpenAI" Version="2.0.0-beta.11" PrivateAssets="compile" />
