@@ -25,9 +25,9 @@ internal class RedisQueueService : IQueueService
     {
         await _database.StreamAddAsync(StreamName,
             [
-                new NameValueEntry(nameof(filePath), filePath),
-                new NameValueEntry(nameof(imageHash), imageHash),
-                new NameValueEntry(nameof(mimeType), mimeType),
+                new NameValueEntry(nameof(ImageProcessingTask.FilePath), filePath),
+                new NameValueEntry(nameof(ImageProcessingTask.ImageHash), imageHash),
+                new NameValueEntry(nameof(ImageProcessingTask.MimeType), mimeType),
             ],
             maxLength: 500,
             useApproximateMaxLength: true
