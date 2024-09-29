@@ -30,6 +30,7 @@ builder.Services.ConfigureDatabase(builder.Configuration);
 //Redis
 builder.Services.AddRedis(builder.Configuration);
 
+//Workers
 builder.Services.AddHostedService<ImageProcessingWorker>();
 
 #endregion

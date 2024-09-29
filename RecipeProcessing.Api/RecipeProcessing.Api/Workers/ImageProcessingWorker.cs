@@ -1,9 +1,8 @@
 using RecipeProcessing.Infrastructure.Interfaces;
-using StackExchange.Redis;
 
 namespace RecipeProcessing.Api.Workers;
 
-public class ImageProcessingWorker(
+internal class ImageProcessingWorker(
     IAiImageAnalysisService imageProcessor,
     IFileService fileService,
     IQueueService queueService,
@@ -29,16 +28,18 @@ public class ImageProcessingWorker(
 
                     await queueService.AcknowledgeProcessedTaskAsync(entry.StreamEntryId);
                     await recipeService.SaveRecipeFromResult(result, entry.ImageHash);
-
+                    //todo save to cache here
+                    
                     fileService.DeleteTemporaryFile(entry.FilePath);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    //add logging
+                    //todo add logging
                 }
             }
             
+            //todo add configurable exponential wait?
             await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }

@@ -18,7 +18,6 @@ public class FileUpload : IValidatableObject
         }
 
         var contentType = ImageFile?.ContentType;
-
         var allowedTypes = new[] { "image/jpeg", "image/png" };
         if (!allowedTypes.Contains(contentType))
         {
