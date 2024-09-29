@@ -1,0 +1,90 @@
+{
+  "Title": "BLT Panzanella Salad",
+  "Servings": 2,
+  "PreparationTime": "20 mins",
+  "TotalTime": "30 mins",
+  "Ingredients": [
+    {
+      "Name": "ripe mixed-size tomatoes",
+      "Quantity": 400,
+      "Unit": "g"
+    },
+    {
+      "Name": "lean smoked bacon rashers",
+      "Quantity": 4,
+      "Unit": null
+    },
+    {
+      "Name": "ciabatta or other rustic bread",
+      "Quantity": 100,
+      "Unit": "g"
+    },
+    {
+      "Name": "extra-virgin olive oil",
+      "Quantity": 1.5,
+      "Unit": "tbsp"
+    },
+    {
+      "Name": "red wine vinegar",
+      "Quantity": 1,
+      "Unit": "tbsp"
+    },
+    {
+      "Name": "onion, finely chopped",
+      "Quantity": 1,
+      "Unit": "spring"
+    },
+    {
+      "Name": "wild rocket or other leaves",
+      "Quantity": 40,
+      "Unit": "g"
+    },
+    {
+      "Name": "roasted red peppers",
+      "Quantity": 2,
+      "Unit": null
+    },
+    {
+      "Name": "pack basil, leaves torn",
+      "Quantity": 0.5,
+      "Unit": "x 30g"
+    },
+    {
+      "Name": "salt",
+      "Quantity": 3.75,
+      "Unit": "g"
+    }
+  ],
+  "Instructions": [
+    {
+      "StepNumber": 1,
+      "Description": "Cut the larger tomatoes into wedges or slices and halve the smaller tomatoes. Put in a colander and sprinkle lightly with salt. Set aside while you prepare the rest of the salad."
+    },
+    {
+      "StepNumber": 2,
+      "Description": "Heat a dry frying pan then cook the bacon for about 5 minutes over a medium-high heat until both sides are golden brown and crispy. Leave to cool and crisp up further on a kitchen paper-lined plate."
+    },
+    {
+      "StepNumber": 3,
+      "Description": "Tear the bread into bite-size chunks, add ½ tablespoon of oil to the frying pan. Toss the bread over a medium heat until golden and lightly toasted. Set aside."
+    },
+    {
+      "StepNumber": 4,
+      "Description": "In a small bowl, whisk together the remaining 1 tablespoon of oil, red wine vinegar and spring onion. Roughly chop the crispy bacon."
+    },
+    {
+      "StepNumber": 5,
+      "Description": "Toss the rocket with the tomatoes, roasted peppers, most of the basil and the dressing. Season to taste, divide between two shallow bowls and top with the crispy bacon and croutons. Garnish with the rest of the basil."
+    }
+  ],
+  "NutritionPerServing": {
+    "Calories": 357,
+    "Protein": 14,
+    "Fat": 18,
+    "SaturatedFat": 5,
+    "Fiber": 1,
+    "Carbohydrates": 3,
+    "Sugars": 10,
+    "Salt": 3.75
+  }
+}
