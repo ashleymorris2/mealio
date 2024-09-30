@@ -7,7 +7,6 @@ public interface IUnitOfWork
 {
     internal IRecipeRepository RecipeRepository { get; }
     internal IImageHashRepository ImageHashRepository { get; }
-
     public Task<IDbContextTransaction> BeginTransactionAsync();
     Task SaveAsync();
 }

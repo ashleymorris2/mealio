@@ -6,7 +6,7 @@ namespace RecipeProcessing.Infrastructure.Services;
 
 public class RecipeService(IUnitOfWork unitOfWork) : IRecipeService
 {
-    public async Task CreateRecipeFromResult(string result, string hash)
+    public async Task SaveRecipeFromResult(string result, string hash)
     {
         if (string.IsNullOrWhiteSpace(result)) throw new ArgumentNullException(nameof(result));
 
@@ -32,28 +32,9 @@ public class RecipeService(IUnitOfWork unitOfWork) : IRecipeService
         }
     }
 
-    public async Task<Recipe> CreateRecipeAsync(Recipe recipe)
-    {
-        await unitOfWork.RecipeRepository.AddAsync(recipe);
-        await unitOfWork.SaveAsync();
-        
-        return recipe;
-    }
-
     public async Task<Recipe?> GetRecipeByImageHash(string hash)
     {
         var imageHash = await unitOfWork.ImageHashRepository.GetAsync(hash);
         return imageHash?.Recipe;
-    }
-
-    public Task<Recipe?> GetRecipeByIdAsync(Guid id)
-    {
-        return unitOfWork.RecipeRepository.GetByIdAsync(id);
-    }
-
-    public async Task UpdateRecipeAsync(Guid id, Recipe recipe)
-    {
-        unitOfWork.RecipeRepository.Update(recipe);
-        await unitOfWork.SaveAsync();
     }
 }
