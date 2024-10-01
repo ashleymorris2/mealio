@@ -36,7 +36,7 @@ public class RecipeService(IUnitOfWork unitOfWork) : IRecipeService
     {
         await unitOfWork.RecipeRepository.AddAsync(recipe);
         await unitOfWork.SaveAsync();
-        
+
         return recipe;
     }
 
@@ -55,5 +55,13 @@ public class RecipeService(IUnitOfWork unitOfWork) : IRecipeService
     {
         unitOfWork.RecipeRepository.Update(recipe);
         await unitOfWork.SaveAsync();
+    }
+
+    public async Task<(IEnumerable<Recipe> recipes, int totalCount)> GetAllRecipesAsync(int pageNumber, int pageSize)
+    {
+        var totalCount = await unitOfWork.RecipeRepository.Count();
+        var recipes = await unitOfWork.RecipeRepository.GetAllByPage(pageNumber, pageSize);
+
+        return (recipes, totalCount);
     }
 }

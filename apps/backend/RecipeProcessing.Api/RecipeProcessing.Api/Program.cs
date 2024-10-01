@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Configure Services
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Add services to the container.
 builder.Services.AddControllers();
 

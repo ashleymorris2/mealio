@@ -2,7 +2,7 @@ namespace RecipeProcessing.Core.Entities;
 
 public class Recipe
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public required string Title { get; set; }
     public int Servings { get; set; }
     public TimeSpan PreparationTime { get; set; }

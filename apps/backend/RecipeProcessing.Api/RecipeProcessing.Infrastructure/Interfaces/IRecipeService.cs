@@ -9,4 +9,5 @@ public interface IRecipeService
     public Task<Recipe?> GetRecipeByImageHash(string hash);
     Task<Recipe?> GetRecipeByIdAsync(Guid id);
     Task UpdateRecipeAsync(Guid id, Recipe recipe);
+    Task<(IEnumerable<Recipe> recipes, int totalCount)> GetAllRecipesAsync(int pageNumber, int pageSize);
 }

@@ -27,7 +27,7 @@ internal class ImageProcessingWorker(
                     );
 
                     await queueService.AcknowledgeProcessedTaskAsync(entry.StreamEntryId);
-                    await recipeService.SaveRecipeFromResult(result, entry.ImageHash);
+                    await recipeService.CreateRecipeFromResult(result, entry.ImageHash);
                     //todo save to cache here
                     
                     fileService.DeleteTemporaryFile(entry.FilePath);
