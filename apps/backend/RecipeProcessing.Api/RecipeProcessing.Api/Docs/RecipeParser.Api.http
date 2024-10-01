@@ -14,3 +14,7 @@ Content-Type: image/png
 ### Return 400 (Bad Request) when no image is supplied
 
 POST {{RecipeParser.Api_HostAddress}}/api/image/process
+
+###
+
+GET {{RecipeParser.Api_HostAddress}}/api/recipes
