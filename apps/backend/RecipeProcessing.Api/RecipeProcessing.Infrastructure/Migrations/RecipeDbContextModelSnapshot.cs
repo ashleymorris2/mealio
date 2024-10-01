@@ -24,18 +24,16 @@ namespace RecipeProcessing.Infrastructure.Migrations
 
             modelBuilder.Entity("RecipeProcessing.Core.Entities.ImageHash", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -46,11 +44,9 @@ namespace RecipeProcessing.Infrastructure.Migrations
 
             modelBuilder.Entity("RecipeProcessing.Core.Entities.Recipe", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<TimeSpan>("PreparationTime")
                         .HasColumnType("interval");
@@ -98,8 +94,8 @@ namespace RecipeProcessing.Infrastructure.Migrations
                             b1.Property<double>("Quantity")
                                 .HasColumnType("double precision");
 
-                            b1.Property<int>("RecipeId")
-                                .HasColumnType("integer");
+                            b1.Property<Guid>("RecipeId")
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("Unit")
                                 .HasColumnType("text");
@@ -126,8 +122,8 @@ namespace RecipeProcessing.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<int>("RecipeId")
-                                .HasColumnType("integer");
+                            b1.Property<Guid>("RecipeId")
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("StepNumber")
                                 .HasColumnType("integer");
@@ -144,8 +140,8 @@ namespace RecipeProcessing.Infrastructure.Migrations
 
                     b.OwnsOne("RecipeProcessing.Core.Entities.NutritionalDetails", "NutritionPerServing", b1 =>
                         {
-                            b1.Property<int>("RecipeId")
-                                .HasColumnType("integer");
+                            b1.Property<Guid>("RecipeId")
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("Calories")
                                 .HasColumnType("integer");

@@ -16,8 +16,7 @@ namespace RecipeProcessing.Infrastructure.Migrations
                 name: "Recipes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Servings = table.Column<int>(type: "integer", nullable: false),
                     PreparationTime = table.Column<TimeSpan>(type: "interval", nullable: false),
@@ -40,10 +39,9 @@ namespace RecipeProcessing.Infrastructure.Migrations
                 name: "ImageHashes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Hash = table.Column<string>(type: "text", nullable: false),
-                    RecipeId = table.Column<int>(type: "integer", nullable: false)
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,7 +63,7 @@ namespace RecipeProcessing.Infrastructure.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Quantity = table.Column<double>(type: "double precision", nullable: false),
                     Unit = table.Column<string>(type: "text", nullable: true),
-                    RecipeId = table.Column<int>(type: "integer", nullable: false)
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,7 +84,7 @@ namespace RecipeProcessing.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     StepNumber = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    RecipeId = table.Column<int>(type: "integer", nullable: false)
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
