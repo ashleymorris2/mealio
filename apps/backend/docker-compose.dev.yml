@@ -1,12 +1,8 @@
 services:
-
-
-  # Apps --
-
   api:
     # .NET development container
     build:
-      context: ./
+      context: ./RecipeProcessing.Api/
       dockerfile: RecipeProcessing.Api/Dockerfile
       args:
         BUILD_CONFIGURATION: Debug # Use Debug mode for development
@@ -25,7 +21,21 @@ services:
     depends_on:
       - db
       - redis
-    command: [ "dotnet", "watch", "run", "--project", "../RecipeProcessing.Api/RecipeProcessing.Api.csproj" ]
+      - gateway
+    command: [ "dotnet", "watch", "run", "--project", "..RecipeProcessing.Api/RecipeProcessing.Api.csproj" ]
+
+  gateway:
+    build:
+      context: ./ApiGateway/
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - 5187:5187
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5187
+    networks:
+      - pg_network
+    # command: [ "dotnet", "watch", "run", "--project", "..ApiGateway/ApiGateway.csproj" ]
 
   db:
     # Postgres database
@@ -49,29 +59,6 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-    networks:
-      - pg_network
-
-
-  # Management tools --
-
-  redis_management:
-    image: redislabs/redisinsight:latest
-    container_name: redisinsight
-    ports:
-      - "5540:5540"
-    networks:
-      - pg_network
-
-  db_management:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: dev@localhost.com
-      PGADMIN_DEFAULT_PASSWORD: pass12
-    ports:
-      - "5050:80"
-    depends_on:
-      - db
     networks:
       - pg_network
 

@@ -3,8 +3,8 @@ export default function Navbar() {
     <header
       className="
       sticky top-0 z-50 flex 
-      justify-between bg-slate-100
-      p-4 items-center text-gray-800 shadow-md px-72"
+      justify-between bg-zinc-50
+      p-4 items-center text-gray-800 shadow-sm px-72"
     >
       <div className="text-2xl font-semibold">
         <div>Mealio</div>

@@ -1,0 +1,24 @@
+services:
+  redis_management:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "5540:5540"
+    networks:
+      - pg_network
+
+  db_management:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@localhost.com
+      PGADMIN_DEFAULT_PASSWORD: pass12
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - pg_network
+
+networks:
+  pg_network:
+    external: true
