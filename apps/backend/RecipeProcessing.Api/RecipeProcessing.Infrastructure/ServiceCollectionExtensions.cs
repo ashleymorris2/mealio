@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
     {
-        var redisConnectionString = configuration.GetValue<string>("ConnectionStrings:RedisConnection");
+        var redisConnectionString = configuration.GetConnectionString("Redis");
         services.AddSingleton<IConnectionMultiplexer>(
             ConnectionMultiplexer.Connect(
                 redisConnectionString ?? throw new InvalidOperationException(nameof(redisConnectionString))
@@ -46,7 +46,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<RecipeDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DatabaseConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("Database")));
 
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<IImageHashRepository, ImageHashRepository>();

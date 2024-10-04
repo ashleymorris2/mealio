@@ -1,17 +1,20 @@
 services:
-  api:
+  recipe-service:
     # .NET development container
     build:
       context: ./RecipeProcessing.Api/
       dockerfile: ./RecipeProcessing.Api/Dockerfile
       args:
         BUILD_CONFIGURATION: Debug
+    container_name: recipe_service
     ports:
       - "5047:5047"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://0.0.0.0:5047
+      - ASPNETCORE_URLS=http://+:5047
       - OpenAi:ApiKey=${OpenAi_ApiKey}
+      - ConnectionStrings:Database=Host=postgres_db;Database=mealio_db_dev;Username=dev;Password=password
+      - ConnectionStrings:Redis=redis:6379
     networks:
       - pg_network
     depends_on:
@@ -26,7 +29,7 @@ services:
     volumes:
       - ../ApiGateway/:/app/src
       - /app/obj/ # <- directory won't be mounted
-      - /app/bin/ # <- directory won't be mounted
+      - /app/bin/ 
     ports:
       - "5187:5187"
     environment:
@@ -52,7 +55,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: redis_server
+    container_name: redis
     ports:
       - "6379:6379"
     volumes:
