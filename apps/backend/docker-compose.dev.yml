@@ -3,13 +3,9 @@ services:
     # .NET development container
     build:
       context: ./RecipeProcessing.Api/
-      dockerfile: RecipeProcessing.Api/Dockerfile
+      dockerfile: ./RecipeProcessing.Api/Dockerfile
       args:
-        BUILD_CONFIGURATION: Debug # Use Debug mode for development
-    volumes:
-      - ../RecipeProcessing.Api/:/src
-      - ~/.nuget/packages:/root/.nuget/packages
-      - ./Config/OpenAi/Prompts:/Config/OpenAi/Prompts
+        BUILD_CONFIGURATION: Debug
     ports:
       - "5047:5047"
     environment:
@@ -22,20 +18,22 @@ services:
       - db
       - redis
       - gateway
-    command: [ "dotnet", "watch", "run", "--project", "..RecipeProcessing.Api/RecipeProcessing.Api.csproj" ]
 
   gateway:
     build:
       context: ./ApiGateway/
-      dockerfile: ApiGateway/Dockerfile
+      dockerfile: ./ApiGateway/Dockerfile
+    volumes:
+      - ../ApiGateway/:/app/src
+      - /app/obj/ # <- directory won't be mounted
+      - /app/bin/ # <- directory won't be mounted
     ports:
-      - 5187:5187
+      - "5187:5187"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:5187
     networks:
       - pg_network
-    # command: [ "dotnet", "watch", "run", "--project", "..ApiGateway/ApiGateway.csproj" ]
 
   db:
     # Postgres database
