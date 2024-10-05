@@ -1,3 +1,9 @@
+import Recipe from "./recipe";
+
 export default function RecipesPage() {
-  return <h1 className="font-extrabold">Hello, Recipes</h1>;
+  return (
+    <div>
+      <Recipe />
+    </div>
+  );
 }

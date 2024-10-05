@@ -29,7 +29,7 @@ services:
     volumes:
       - ../ApiGateway/:/app/src
       - /app/obj/ # <- directory won't be mounted
-      - /app/bin/ 
+      - /app/bin/
     ports:
       - "5187:5187"
     environment:
