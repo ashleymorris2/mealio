@@ -6,7 +6,7 @@ namespace RecipeProcessing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ImageController(
+public class ImagesController(
     IFileService fileService,
     IRecipeService recipeService,
     IQueueService queueService,

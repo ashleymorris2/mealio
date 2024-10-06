@@ -23,6 +23,7 @@ services:
       - gateway
 
   gateway:
+    container_name: api_gateway
     build:
       context: ./ApiGateway/
       dockerfile: ./ApiGateway/Dockerfile
@@ -65,6 +66,7 @@ services:
 
 networks:
   pg_network:
+    name: pg_network
     driver: bridge
 
 volumes:

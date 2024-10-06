@@ -1,9 +1,9 @@
-import Recipe from "./recipe";
+import RecipeGrid from "../components/RecipeGrid";
 
 export default function RecipesPage() {
   return (
     <div>
-      <Recipe />
+      <RecipeGrid />
     </div>
   );
 }

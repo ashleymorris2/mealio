@@ -9,16 +9,16 @@ services:
 
   db_management:
     image: dpage/pgadmin4
+    container_name: pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: dev@localhost.com
       PGADMIN_DEFAULT_PASSWORD: pass12
     ports:
       - "5050:80"
-    depends_on:
-      - db
     networks:
       - pg_network
 
 networks:
   pg_network:
+    name: pg_network
     external: true

@@ -5,13 +5,14 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
+      - ./node_modules:/app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
     command: npm run dev
     networks:
       - pg_network
 
-  networks:
-    pg_network:
-      external: true
+networks:
+  pg_network:
+    name: pg_network
+    external: true

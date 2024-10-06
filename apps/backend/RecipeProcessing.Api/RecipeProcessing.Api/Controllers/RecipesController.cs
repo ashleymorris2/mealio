@@ -63,17 +63,4 @@ public class RecipesController(IRecipeService recipeService, IMapper mapper) : C
         await recipeService.UpdateRecipeAsync(id, mapper.Map(recipeDto, existingRecipe));
         return NoContent();
     }
-
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> DeleteRecipe(Guid id)
-    // {
-    //     var existingRecipe = await _recipeService.GetRecipeByIdAsync(id);
-    //     if (existingRecipe == null)
-    //     {
-    //         return NotFound();
-    //     }
-    //
-    //     await _recipeService.DeleteRecipeAsync(id);
-    //     return NoContent();
-    // }
 }
