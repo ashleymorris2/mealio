@@ -22,7 +22,7 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
     {
         var response = new
         {
-            error = "An unhandled exception has occurred."
+            error = "An error has occurred while processing your request."
         };
         
         var errorResponse = JsonConvert.SerializeObject(response);
