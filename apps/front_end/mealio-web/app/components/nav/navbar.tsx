@@ -1,16 +1,36 @@
+import Link from "next/link";
+import {
+  Navbar as FlowbiteNavbar,
+  NavbarBrand,
+  NavbarCollapse,
+  NavbarLink,
+  NavbarToggle,
+} from "flowbite-react";
+
 export default function Navbar() {
   return (
-    <header
-      className="
-      sticky top-0 z-50 flex 
-      justify-between bg-zinc-50
-      p-4 items-center text-gray-800 shadow-sm px-72"
-    >
-      <div className="text-2xl font-semibold">
-        <div>Mealio</div>
-      </div>
-      <div>--Mid Point--</div>
-      <div>Login?</div>
-    </header>
+    <FlowbiteNavbar fluid border className="bg-slate-50">
+      <NavbarBrand>
+        <img
+          src="../../../favicon.ico" //todo: Change this in future
+          className="mr-3 h-6 sm:h-6"
+          alt="Flowbite React Logo"
+        />
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+          Mealio
+        </span>
+      </NavbarBrand>
+      <NavbarToggle />
+      <NavbarCollapse>
+        <NavbarLink href="#" active>
+          Home
+        </NavbarLink>
+        <NavbarLink as={Link} href="#">
+          About
+        </NavbarLink>
+        <NavbarLink href="#">Pricing</NavbarLink>
+        <NavbarLink href="#">Login</NavbarLink>
+      </NavbarCollapse>
+    </FlowbiteNavbar>
   );
 }
