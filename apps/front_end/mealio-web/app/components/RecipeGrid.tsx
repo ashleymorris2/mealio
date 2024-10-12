@@ -9,8 +9,10 @@ async function getRecipes(): Promise<Recipe[]> {
 export default async function RecipeGrid() {
   const recipes = await getRecipes();
 
+  console.log(recipes);
+
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid pr-36 pl-36 grid-cols-3 gap-8">
       {recipes &&
         recipes.map((recipe: Recipe) => (
           <RecipeCard recipe={recipe} key={recipe.id} />

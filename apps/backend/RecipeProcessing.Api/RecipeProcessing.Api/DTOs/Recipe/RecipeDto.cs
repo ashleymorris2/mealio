@@ -1,4 +1,4 @@
-namespace RecipeProcessing.Api.DTOs;
+namespace RecipeProcessing.Api.DTOs.Recipe;
 
 public class RecipeDto
 {

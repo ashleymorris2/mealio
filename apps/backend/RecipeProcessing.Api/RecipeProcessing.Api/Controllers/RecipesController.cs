@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RecipeProcessing.Api.DTOs;
+using RecipeProcessing.Api.DTOs.Recipe;
 using RecipeProcessing.Core.Entities;
 using RecipeProcessing.Infrastructure.Interfaces;
 
@@ -11,7 +12,7 @@ namespace RecipeProcessing.Api.Controllers;
 public class RecipesController(IRecipeService recipeService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Recipe>>> GetAll(int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<IEnumerable<RecipeSummaryDto>>> GetAll(int pageNumber = 1, int pageSize = 10)
     {
         if (pageNumber < 1 || pageSize < 1)
         {
@@ -29,7 +30,7 @@ public class RecipesController(IRecipeService recipeService, IMapper mapper) : C
         Response.Headers.Append("X-Total-Count", totalCount.ToString());
         Response.Headers.Append("X-Total-Pages", ((int)Math.Ceiling((double)totalCount / pageSize)).ToString());
 
-        return Ok(recipes);
+        return Ok(mapper.Map<IEnumerable<RecipeSummaryDto>>(recipes));
     }
 
     [HttpGet("{id:guid}")]
